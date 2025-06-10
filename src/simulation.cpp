@@ -1,7 +1,7 @@
 
 #include "simulation.h"
 #include "utils.h"
-
+#include <iostream>
 
 Simulation::Simulation()
 : m_sim_parameters(SimulationParams()),
@@ -25,7 +25,7 @@ void Simulation::reset()
 
     m_is_running = true;
     m_is_paused = false;
-    
+
     m_kalman_filter.reset();
 
     m_gps_sensor.reset();
@@ -42,7 +42,7 @@ void Simulation::reset()
     m_lidar_sensor.setLidarDAEnabled(m_sim_parameters.lidar_id_enabled);
 
     m_car.reset(m_sim_parameters.car_initial_x, m_sim_parameters.car_initial_y,m_sim_parameters.car_initial_psi, m_sim_parameters.car_initial_velocity);
-    
+
     for(auto& cmd : m_sim_parameters.car_commands){m_car.addVehicleCommand(cmd.get());}
 
     // Plotting Variables
@@ -135,7 +135,7 @@ void Simulation::update()
         }
     }
 }
-        
+
 void Simulation::render(Display& disp)
 {
     std::vector<Vector2> marker_lines1 = {{0.5,0.5},{-0.5,-0.5}};
@@ -199,7 +199,7 @@ void Simulation::render(Display& disp)
         disp.drawLine(Vector2(x0,y0), Vector2(x0 + delta_x,y0 + delta_y));
     }
 
-    int x_offset, y_offset; 
+    int x_offset, y_offset;
     int stride = 20;
     // Simulation Status / Parameters
     x_offset = 10;
@@ -262,7 +262,7 @@ void Simulation::render(Display& disp)
     disp.drawText_MainFont(heading_error_string,Vector2(x_offset,y_offset+stride*2),1.0,{255,255,255});
     disp.drawText_MainFont(velocity_error_string,Vector2(x_offset,y_offset+stride*3),1.0,{255,255,255});
 }
-   
+
 void Simulation::reset(SimulationParams sim_params){m_sim_parameters = sim_params; reset();}
 void Simulation::increaseTimeMultiplier()
 {

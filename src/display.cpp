@@ -30,7 +30,7 @@ bool Display::createRenderer( std::string title, int screenWidth, int screenHeig
     mViewHeight = mScreenHeight;
     mViewXOffset = 0.0;
     mViewYOffset = 0.0;
-    
+
     // Create window
     mWindow = SDL_CreateWindow( title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, 0 );
     if( mWindow == nullptr )
@@ -146,7 +146,7 @@ void Display::drawText_MainFont(const std::string text,const Vector2 pos, const 
         std::cout <<  "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
         return;
     }
-    
+
     SDL_Texture* texture = SDL_CreateTextureFromSurface( mRenderer, surface );
     if (texture == nullptr)
     {

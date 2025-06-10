@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
 project(AKFSFSimulation)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+find_package(SDL2 REQUIRED)
 
 set(SRC_CPP
     src/main.cpp
@@ -19,6 +20,9 @@ add_executable(${PROJECT_NAME}
         ${SRC_CPP}
         )
 
+
+target_include_directories(${PROJECT_NAME} PUBLIC ${SDL2_INCLUDE_DIRS})
+
 target_link_libraries(${PROJECT_NAME}
         SDL2
         SDL2_ttf
@@ -28,5 +32,5 @@ target_link_libraries(${PROJECT_NAME}
 add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/data/ $<TARGET_FILE_DIR:${PROJECT_NAME}>)
-    
-    
+
+
