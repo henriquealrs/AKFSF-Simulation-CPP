@@ -8,6 +8,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
+#include <stdexcept>
+
+
 template<typename ... Args>
 std::string string_format( const std::string& format, Args ... args )
 {
