@@ -26,7 +26,7 @@ class KalmanFilterBase
         bool isInitialised() const {return m_initialised;}
 
     protected:
-    
+
         VectorXd getState() const {return m_state;}
         MatrixXd getCovariance()const {return m_covariance;}
         void setState(const VectorXd& state ) {m_state = state; m_initialised = true;}

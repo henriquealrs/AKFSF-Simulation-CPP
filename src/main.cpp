@@ -77,7 +77,7 @@ int main( int argc, char* args[] )
             else if (event.type == SDL_KEYDOWN)
             {
                 switch( event.key.keysym.sym )
-                {               
+                {
                     case SDLK_SPACE: mSimulation.togglePauseSimulation(); break;
                     case SDLK_ESCAPE:mRunning = false; break;
                     case SDLK_KP_PLUS: mSimulation.increaseZoom(); break;
@@ -146,7 +146,7 @@ SimulationParams loadSimulation3Parameters()
 }
 
 SimulationParams loadSimulation4Parameters()
-{    
+{
     SimulationParams sim_params;
     sim_params.profile_name = "4 - Variable Speed Profile + GPS + GYRO";
     sim_params.end_time = 200;
@@ -160,7 +160,7 @@ SimulationParams loadSimulation4Parameters()
 }
 
 SimulationParams loadSimulation5Parameters()
-{    
+{
     SimulationParams sim_params = loadSimulation1Parameters();
     sim_params.profile_name = "5 - Constant Velocity + GPS + GYRO + LIDAR+ Zero Initial Conditions";
     sim_params.lidar_enabled = true;
@@ -168,7 +168,7 @@ SimulationParams loadSimulation5Parameters()
 }
 
 SimulationParams loadSimulation6Parameters()
-{    
+{
     SimulationParams sim_params = loadSimulation2Parameters();
     sim_params.profile_name = "6 - Constant Velocity + GPS + GYRO + LIDAR + Non-zero Initial Conditions";
     sim_params.lidar_enabled = true;
@@ -176,7 +176,7 @@ SimulationParams loadSimulation6Parameters()
 }
 
 SimulationParams loadSimulation7Parameters()
-{    
+{
     SimulationParams sim_params = loadSimulation3Parameters();
     sim_params.profile_name = "7 - Constant Speed Profile + GPS + GYRO + LIDAR";
     sim_params.lidar_enabled = true;
@@ -185,7 +185,7 @@ SimulationParams loadSimulation7Parameters()
 
 
 SimulationParams loadSimulation8Parameters()
-{    
+{
     SimulationParams sim_params = loadSimulation4Parameters();
     sim_params.profile_name = "8 - Variable Speed Profile + GPS + GYRO + LIDAR";
     sim_params.lidar_enabled = true;
@@ -193,7 +193,7 @@ SimulationParams loadSimulation8Parameters()
 }
 
 SimulationParams loadSimulation9Parameters()
-{    
+{
     SimulationParams sim_params;
     sim_params.profile_name = "9 - CAPSTONE";
     sim_params.gyro_enabled = true;
@@ -229,7 +229,7 @@ SimulationParams loadSimulation9Parameters()
 }
 
 SimulationParams loadSimulation0Parameters()
-{    
+{
     SimulationParams sim_params = loadSimulation9Parameters();
     sim_params.profile_name = "0 - CAPSTONE BONUS (with No Lidar Data Association)";
     sim_params.lidar_id_enabled = false;
