@@ -15,9 +15,9 @@
 // YOU CAN USE AND MODIFY THESE CONSTANTS HERE
 constexpr bool INIT_ON_FIRST_PREDICTION = true;
 constexpr double INIT_POS_STD = 1;
-constexpr double INIT_VEL_STD = 0;
+constexpr double INIT_VEL_STD = 10;
 constexpr double ACCEL_STD = 0.0;
-constexpr double GPS_POS_STD = 3.0;
+constexpr double GPS_POS_STD = 1.0;
 // -------------------------------------------------- //
 
 void KalmanFilter::predictionStep(double dt)
@@ -47,11 +47,11 @@ void KalmanFilter::predictionStep(double dt)
         state(2) = 5 * cos_yaw;
         state(3) = 5 * sin_yaw;
 
-        cov <<
-            INIT_POS_STD * cos_yaw, 0, 0, 0,
-            0, INIT_POS_STD * sin_yaw, 0, 0,
-            0, 0, INIT_VEL_STD * cos_yaw, 0,
-            0, 0, 0, INIT_VEL_STD * sin_yaw;
+        cov(0, 0) = INIT_POS_STD * INIT_POS_STD;
+        cov(1, 1) = INIT_POS_STD * INIT_POS_STD;
+        cov(2, 2) = INIT_VEL_STD * INIT_VEL_STD;
+        cov(3, 3) = INIT_VEL_STD * INIT_VEL_STD;
+
 
         setState(state);
         setCovariance(cov);
@@ -109,7 +109,7 @@ void KalmanFilter::handleGPSMeasurement(GPSMeasurement meas)
         const auto H = (Eigen::MatrixXd(2, 4) <<
             1, 0, 0, 0,
             0, 1, 0, 0).finished();
-        const auto R = GPS_POS_STD * Eigen::Matrix2d::Identity();
+        const auto R = (GPS_POS_STD * GPS_POS_STD) * Eigen::Matrix2d::Identity();
         const auto y_measured = (Vector2d() << meas.x, meas.y).finished();
         const auto innovation = y_measured - H * state;
         const auto innovation_cov = H * cov * H.transpose() + R;
@@ -120,8 +120,8 @@ void KalmanFilter::handleGPSMeasurement(GPSMeasurement meas)
 
         // ----------------------------------------------------------------------- //
 
-        setState(state);
-        setCovariance(cov);
+        setState(new_state);
+        setCovariance(new_cov);
     }
     else
     {
@@ -132,9 +132,16 @@ void KalmanFilter::handleGPSMeasurement(GPSMeasurement meas)
         // Hint: You can use the constants: GPS_POS_STD, INIT_VEL_STD
         // ----------------------------------------------------------------------- //
         // ENTER YOUR CODE HERE
+
         VectorXd state = Vector4d::Zero();
         MatrixXd cov = Matrix4d::Zero();
 
+        state(0) = meas.x;
+        state(1) = meas.y;
+        cov(0,0) = GPS_POS_STD*GPS_POS_STD;
+        cov(1,1) = GPS_POS_STD*GPS_POS_STD;
+        cov(2,2) = INIT_VEL_STD*INIT_VEL_STD;
+        cov(3,3) = INIT_VEL_STD*INIT_VEL_STD;
 
         setState(state);
         setCovariance(cov);
