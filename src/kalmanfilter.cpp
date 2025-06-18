@@ -36,7 +36,6 @@ void KalmanFilter::predictionStep(double dt)
         // Hint: You can use the constants: INIT_POS_STD, INIT_VEL_STD
         // ----------------------------------------------------------------------- //
         // ENTER YOUR CODE HERE
-        std::cout << "Is NOT initialized\n";
         VectorXd state = Vector4d::Zero();
         MatrixXd cov =  Matrix4d::Zero();
 
@@ -81,7 +80,6 @@ void KalmanFilter::predictionStep(double dt)
             0,  .5*dt*dt,
             1,  0,
             0, 1;
-        // std::cout << "Process model: " << state_update << "\n";
 
         state = state_update * state;
         cov = state_update * cov * state_update.transpose() + process_noise_transform * process_model_noise * process_noise_transform.transpose();
@@ -93,13 +91,10 @@ void KalmanFilter::predictionStep(double dt)
     }
 }
 
+
 void KalmanFilter::handleGPSMeasurement(GPSMeasurement meas)
 {
-    auto H = Eigen::MatrixXd(2, 4);
-    H <<
-        1, 0, 0, 0,
-        0, 1, 0, 0;
-    auto R = Eigen::Matrix2d::Identity();
+
     if(isInitialised())
     {
         VectorXd state = getState();
@@ -111,6 +106,17 @@ void KalmanFilter::handleGPSMeasurement(GPSMeasurement meas)
         // Hint: You can use the constants: GPS_POS_STD
         // ----------------------------------------------------------------------- //
         // ENTER YOUR CODE HERE
+        const auto H = (Eigen::MatrixXd(2, 4) <<
+            1, 0, 0, 0,
+            0, 1, 0, 0).finished();
+        const auto R = GPS_POS_STD * Eigen::Matrix2d::Identity();
+        const auto y_measured = (Vector2d() << meas.x, meas.y).finished();
+        const auto innovation = y_measured - H * state;
+        const auto innovation_cov = H * cov * H.transpose() + R;
+
+        const auto kallman_gain = cov * H.transpose() * innovation_cov.inverse();
+        const auto new_state = state + kallman_gain * innovation;
+        const auto new_cov = (Matrix4d::Identity() - kallman_gain * H) * cov;
 
         // ----------------------------------------------------------------------- //
 
@@ -129,7 +135,6 @@ void KalmanFilter::handleGPSMeasurement(GPSMeasurement meas)
         VectorXd state = Vector4d::Zero();
         MatrixXd cov = Matrix4d::Zero();
 
-        std::cout << "Uninitialised\n";
 
         setState(state);
         setCovariance(cov);

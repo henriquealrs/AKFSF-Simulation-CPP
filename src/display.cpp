@@ -51,6 +51,9 @@ bool Display::createRenderer( std::string title, int screenWidth, int screenHeig
 
     // Create Font
     mMainFont = TTF_OpenFont( "Roboto-Regular.ttf", 18 );
+    if (mMainFont == nullptr){
+        mMainFont = TTF_OpenFont( "data/Roboto-Regular.ttf", 18 );
+    }
     if( mMainFont == nullptr )
     {
         std::cout << "Failed to load font! SDL_ttf Error: " <<  TTF_GetError() << std::endl;
