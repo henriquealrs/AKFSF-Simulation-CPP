@@ -33,7 +33,7 @@ void KalmanFilter::handleLidarMeasurement(LidarMeasurement meas, const BeaconMap
         VectorXd state = getState();
         MatrixXd cov = getCovariance();
 
-        // Implement The Kalman Filter Update Step for the Lidar Measurements in the 
+        // Implement The Kalman Filter Update Step for the Lidar Measurements in the
         // section below.
         // HINT: use the wrapAngle() function on angular values to always keep angle
         // values within correct range, otherwise strange angle effects might be seen.
@@ -45,7 +45,7 @@ void KalmanFilter::handleLidarMeasurement(LidarMeasurement meas, const BeaconMap
 
         BeaconData map_beacon = map.getBeaconWithId(meas.id); // Match Beacon with built in Data Association Id
         if (meas.id != -1 && map_beacon.id != -1)
-        {           
+        {
             // The map matched beacon positions can be accessed using: map_beacon.x AND map_beacon.y
         }
 
@@ -63,7 +63,7 @@ void KalmanFilter::predictionStep(GyroMeasurement gyro, double dt)
         VectorXd state = getState();
         MatrixXd cov = getCovariance();
 
-        // Implement The Kalman Filter Prediction Step for the system in the  
+        // Implement The Kalman Filter Prediction Step for the system in the
         // section below.
         // HINT: Assume the state vector has the form [PX, PY, PSI, V].
         // HINT: Use the Gyroscope measurement as an input into the prediction step.
@@ -77,7 +77,7 @@ void KalmanFilter::predictionStep(GyroMeasurement gyro, double dt)
 
         setState(state);
         setCovariance(cov);
-    } 
+    }
 }
 
 void KalmanFilter::handleGPSMeasurement(GPSMeasurement meas)
@@ -123,8 +123,8 @@ void KalmanFilter::handleGPSMeasurement(GPSMeasurement meas)
 
         setState(state);
         setCovariance(cov);
-    } 
-             
+    }
+
 }
 
 Matrix2d KalmanFilter::getVehicleStatePositionCovariance()

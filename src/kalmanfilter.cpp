@@ -16,157 +16,135 @@
 constexpr bool INIT_ON_FIRST_PREDICTION = true;
 constexpr double INIT_POS_STD = 1;
 constexpr double INIT_VEL_STD = 10;
-constexpr double ACCEL_STD = 0.0;
+constexpr double ACCEL_STD = 0.1;
 constexpr double GPS_POS_STD = 1.0;
 // -------------------------------------------------- //
 
 void KalmanFilter::predictionStep(double dt)
 {
     constexpr double yaw = 45 * M_PI / 180.0;
-    constexpr auto cos_yaw = cos(yaw);
-    constexpr auto sin_yaw = sin(yaw);
+    constexpr double cos_yaw = std::cos(yaw);
+    constexpr double sin_yaw = std::sin(yaw);
 
     if (!isInitialised() && INIT_ON_FIRST_PREDICTION)
     {
-        // Implement the State Vector and Covariance Matrix Initialisation in the
-        // section below if you want to initialise the filter WITHOUT waiting for
-        // the first measurement to occur. Make sure you call the setState() /
-        // setCovariance() functions once you have generated the initial conditions.
-        // Hint: Assume the state vector has the form [X,Y,VX,VY].
-        // Hint: You can use the constants: INIT_POS_STD, INIT_VEL_STD
-        // ----------------------------------------------------------------------- //
-        // ENTER YOUR CODE HERE
-        VectorXd state = Vector4d::Zero();
-        MatrixXd cov =  Matrix4d::Zero();
+        Vector4d state;
+        Matrix4d cov = Matrix4d::Zero();
 
-        // Assume the initial position is (X,Y) = (0,0) m
-        state(0) = 0;
-        state(1) = 0;
+        state << 0, 0, 5.0 * cos_yaw, 5.0 * sin_yaw;
 
-        // Assume the initial velocity is 5 m/s at 45 degrees (VX,VY) = (5*cos(45deg),5*sin(45deg)) m/s
-        state(2) = 5 * cos_yaw;
-        state(3) = 5 * sin_yaw;
-
-        cov(0, 0) = INIT_POS_STD * INIT_POS_STD;
-        cov(1, 1) = INIT_POS_STD * INIT_POS_STD;
-        cov(2, 2) = INIT_VEL_STD * INIT_VEL_STD;
-        cov(3, 3) = INIT_VEL_STD * INIT_VEL_STD;
-
+        cov.diagonal() << INIT_POS_STD * INIT_POS_STD,
+                          INIT_POS_STD * INIT_POS_STD,
+                          INIT_VEL_STD * INIT_VEL_STD,
+                          INIT_VEL_STD * INIT_VEL_STD;
 
         setState(state);
         setCovariance(cov);
-        // ----------------------------------------------------------------------- //
     }
 
     if (isInitialised())
     {
-        VectorXd state = getState();
-        MatrixXd cov = getCovariance();
+        Vector4d& state = getState();
+        Matrix4d& cov = getCovariance();
 
-        // Implement The Kalman Filter Prediction Step for the system in the
-        // section below.
-        // Hint: You can use the constants: ACCEL_STD
-        // ----------------------------------------------------------------------- //
-        Matrix4d state_update = Eigen::Matrix4d::Identity();
-        state_update(0, 2) = dt;
-        state_update(1, 3) = dt;
+        // State transition matrix F
+        Matrix4d F = Matrix4d::Identity();
+        F(0, 2) = dt;
+        F(1, 3) = dt;
 
-        Matrix2d process_model_noise;
-        process_model_noise << ACCEL_STD * ACCEL_STD* cos_yaw, 0,
-                               0, ACCEL_STD * ACCEL_STD* sin_yaw;
-        MatrixXd process_noise_transform(4, 2);
-        process_noise_transform <<
-            .5 * dt*dt,  0,
-            0,  .5*dt*dt,
-            1,  0,
-            0, 1;
+        // Predict new state
+        state = F * state;
 
-        state = state_update * state;
-        cov = state_update * cov * state_update.transpose() + process_noise_transform * process_model_noise * process_noise_transform.transpose();
+        // Predict new covariance
+        if (ACCEL_STD > 1e-8)
+        {
+            // Q = G * M * G^T
+            Eigen::Matrix<double, 4, 2> G;
+            G << 0.5 * dt * dt, 0,
+                 0, 0.5 * dt * dt,
+                 dt, 0,
+                 0, dt;
 
-        // ----------------------------------------------------------------------- //
+            Matrix2d M;
+            M << ACCEL_STD * ACCEL_STD * cos_yaw, 0,
+                 0, ACCEL_STD * ACCEL_STD * sin_yaw;
 
-        setState(state);
-        setCovariance(cov);
+            cov.noalias() = F * cov * F.transpose() + G * M * G.transpose();
+        }
+        else
+        {
+            // Avoid unnecessary computation
+            cov.noalias() = F * cov * F.transpose();
+        }
     }
 }
 
 
-void KalmanFilter::handleGPSMeasurement(GPSMeasurement meas)
+void KalmanFilter::handleGPSMeasurement(const GPSMeasurement& meas)
 {
+    constexpr double r_var = GPS_POS_STD * GPS_POS_STD;
 
-    if(isInitialised())
+    if (isInitialised())
     {
-        VectorXd state = getState();
-        MatrixXd cov = getCovariance();
+        Vector4d& state = getState();
+        Matrix4d& cov = getCovariance();
 
-        // Implement The Kalman Filter Update Step for the GPS Measurements in the
-        // section below.
-        // Hint: Assume that the GPS sensor has a 3m (1 sigma) position uncertainty.
-        // Hint: You can use the constants: GPS_POS_STD
-        // ----------------------------------------------------------------------- //
-        // ENTER YOUR CODE HERE
-        const auto H = (Eigen::MatrixXd(2, 4) <<
+        // Observation matrix: H maps [x, y, vx, vy] → [x, y]
+        static const auto H = [](){
+            return (Eigen::Matrix<double, 2, 4>() <<
             1, 0, 0, 0,
             0, 1, 0, 0).finished();
-        const auto R = (GPS_POS_STD * GPS_POS_STD) * Eigen::Matrix2d::Identity();
-        const auto y_measured = (Vector2d() << meas.x, meas.y).finished();
-        const auto innovation = y_measured - H * state;
-        const auto innovation_cov = H * cov * H.transpose() + R;
+        }();
 
-        const auto kallman_gain = cov * H.transpose() * innovation_cov.inverse();
-        const auto new_state = state + kallman_gain * innovation;
-        const auto new_cov = (Matrix4d::Identity() - kallman_gain * H) * cov;
+        static const Matrix2d R = r_var * Matrix2d::Identity();
 
-        // ----------------------------------------------------------------------- //
+        const Vector2d z(meas.x, meas.y);
+        const Vector2d innovation = z - H * state;
 
-        setState(new_state);
-        setCovariance(new_cov);
+        // Innovation covariance
+        const Matrix2d S = H * cov * H.transpose() + R;
+
+        // Kalman Gain (K = PHᵗS⁻¹)
+        const Eigen::Matrix<double, 4, 2> K = cov * H.transpose() * S.inverse();
+
+        // Update step
+        state.noalias() += K * innovation;
+        const auto cov_cpy = cov;
+        cov.noalias() = (Matrix4d::Identity() - K * H).eval() * cov_cpy;
+
     }
     else
     {
-        // Implement the State Vector and Covariance Matrix Initialisation in the
-        // section below. Make sure you call the setState/setCovariance functions
-        // once you have generated the initial conditions.
-        // Hint: Assume the state vector has the form [X,Y,VX,VY].
-        // Hint: You can use the constants: GPS_POS_STD, INIT_VEL_STD
-        // ----------------------------------------------------------------------- //
-        // ENTER YOUR CODE HERE
+        Vector4d state;
+        Matrix4d cov = Matrix4d::Zero();
 
-        VectorXd state = Vector4d::Zero();
-        MatrixXd cov = Matrix4d::Zero();
-
-        state(0) = meas.x;
-        state(1) = meas.y;
-        cov(0,0) = GPS_POS_STD*GPS_POS_STD;
-        cov(1,1) = GPS_POS_STD*GPS_POS_STD;
-        cov(2,2) = INIT_VEL_STD*INIT_VEL_STD;
-        cov(3,3) = INIT_VEL_STD*INIT_VEL_STD;
+        state << meas.x, meas.y, 0, 0;
+        cov.diagonal() << r_var, r_var, INIT_VEL_STD * INIT_VEL_STD, INIT_VEL_STD * INIT_VEL_STD;
 
         setState(state);
         setCovariance(cov);
-        // ----------------------------------------------------------------------- //
     }
 }
 
 Matrix2d KalmanFilter::getVehicleStatePositionCovariance()
 {
     Matrix2d pos_cov = Matrix2d::Zero();
-    MatrixXd cov = getCovariance();
+    const auto& cov = getCovariance();
     if (isInitialised() && cov.size() != 0){pos_cov << cov(0,0), cov(0,1), cov(1,0), cov(1,1);}
     return pos_cov;
 }
 
 VehicleState KalmanFilter::getVehicleState()
 {
+    VehicleState ret = {};
     if (isInitialised())
     {
-        VectorXd state = getState(); // STATE VECTOR [X,Y,VX,VY]
-        double psi = std::atan2(state[3],state[2]);
-        double V = std::sqrt(state[2]*state[2] + state[3]*state[3]);
-        return VehicleState(state[0],state[1],psi,V);
+        const auto& state = getState(); // STATE VECTOR [X,Y,VX,VY]
+        const double psi = std::atan2(state[3],state[2]);
+        const double V = std::sqrt(state[2]*state[2] + state[3]*state[3]);
+        ret = VehicleState(state[0],state[1],psi,V);
     }
-    return VehicleState();
+    return ret;
 }
 
 void KalmanFilter::predictionStep(GyroMeasurement gyro, double dt){predictionStep(dt);}

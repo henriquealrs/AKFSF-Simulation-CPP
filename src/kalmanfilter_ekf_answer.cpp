@@ -43,7 +43,7 @@ void KalmanFilter::handleLidarMeasurement(LidarMeasurement meas, const BeaconMap
         // ----------------------------------------------------------------------- //
         // ENTER YOUR CODE HERE
 
-        BeaconData map_beacon = map.getBeaconWithId(meas.id); // Match Beacon with built in Data Association Id
+        const BeaconData& map_beacon = map.getBeaconWithId(meas.id); // Match Beacon with built in Data Association Id
         if (meas.id != -1 && map_beacon.id != -1)
         {           
             // Measurement Vector

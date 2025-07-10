@@ -22,9 +22,9 @@ class BeaconMap
 
         void addBeacon(double x, double y);
 
-        BeaconData getBeaconWithId(int id) const;
+        const BeaconData& getBeaconWithId(int id) const;
         std::vector<BeaconData> getBeaconsWithinRange(double x, double y, double range) const;
-        std::vector<BeaconData> getBeacons() const;
+        const std::vector<BeaconData>& getBeacons() const;
 
         void render(Display& disp) const;
 

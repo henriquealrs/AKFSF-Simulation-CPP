@@ -30,6 +30,7 @@ bool Display::createRenderer( std::string title, int screenWidth, int screenHeig
     mViewHeight = mScreenHeight;
     mViewXOffset = 0.0;
     mViewYOffset = 0.0;
+    std::cout << "Creating renderer\n";
 
     // Create window
     mWindow = SDL_CreateWindow( title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, 0 );
@@ -178,14 +179,15 @@ void Display::drawText_MainFont(const std::string text,const Vector2 pos, const 
 
 std::vector<Vector2> transformPoints(const std::vector<Vector2>& points, const Vector2& position, const double rotation)
 {
-    double ctheta = cos(rotation);
-    double stheta = sin(rotation);
-    std::vector<Vector2> transformedPoints;
-    for (const Vector2& point : points)
+    const double ctheta = cos(rotation);
+    const double stheta = sin(rotation);
+    std::vector<Vector2> transformedPoints = points;
+    for(auto& p : transformedPoints)
     {
-        double x = point.x * ctheta - stheta * point.y + position.x;
-        double y = point.x * stheta + ctheta * point.y + position.y;
-        transformedPoints.push_back(Vector2(x,y));
+        const auto x = p.x;
+        const auto y = p.y;
+        p.x = x * ctheta - stheta * y + position.x;
+        p.y = x * stheta + ctheta * y + position.y;
     }
     return transformedPoints;
 }
@@ -198,8 +200,11 @@ std::vector<std::vector<Vector2>> transformPoints(const std::vector<std::vector<
 
 std::vector<Vector2> offsetPoints(const std::vector<Vector2>& points, const Vector2& offset)
 {
-    std::vector<Vector2> transformedPoints;
-    for (const Vector2& point : points){transformedPoints.push_back(Vector2(point.x + offset.x,point.y + offset.y));}
+    std::vector<Vector2> transformedPoints = points;
+    for (auto& p : transformedPoints) {
+        p.x += offset.x;
+        p.y += offset.y;
+    }
     return transformedPoints;
 }
 

@@ -20,6 +20,7 @@ add_executable(${PROJECT_NAME}
         ${SRC_CPP}
         )
 
+add_compile_options(-g -O3)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${SDL2_INCLUDE_DIRS})
 

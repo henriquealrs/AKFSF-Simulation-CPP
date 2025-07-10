@@ -16,21 +16,23 @@ void BeaconMap::addBeacon(double x, double y)
     m_beacon_map.push_back(BeaconData(x,y,m_beacon_map.size()));
 }
 
-BeaconData BeaconMap::getBeaconWithId(int id) const
+const BeaconData& BeaconMap::getBeaconWithId(int id) const
 {
+    static BeaconData empty = BeaconData();
     for (const BeaconData& beacon : m_beacon_map){if (beacon.id == id){return beacon;}}
-    return BeaconData();
+    return empty;
 }
 
 std::vector<BeaconData> BeaconMap::getBeaconsWithinRange(double x, double y, double range) const
 {
     std::vector<BeaconData> beacons;
+    beacons.reserve(m_beacon_map.size());
     for (const BeaconData& beacon : m_beacon_map)
     {
-        double delta_x = beacon.x - x;
-        double delta_y = beacon.y - y;
-        double beacon_range = std::sqrt(delta_x*delta_x + delta_y*delta_y);
-        if (beacon_range < range)
+        const double delta_x = beacon.x - x;
+        const double delta_y = beacon.y - y;
+        const double beacon_range = delta_x*delta_x + delta_y*delta_y;
+        if (beacon_range < range * range)
         {
             beacons.push_back(beacon);
         }
@@ -38,7 +40,7 @@ std::vector<BeaconData> BeaconMap::getBeaconsWithinRange(double x, double y, dou
     return beacons;
 }
 
-std::vector<BeaconData> BeaconMap::getBeacons() const
+const std::vector<BeaconData>& BeaconMap::getBeacons() const
 {
     return m_beacon_map;
 }

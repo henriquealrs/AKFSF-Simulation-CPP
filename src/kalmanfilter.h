@@ -27,15 +27,15 @@ class KalmanFilterBase
 
     protected:
 
-        VectorXd getState() const {return m_state;}
-        MatrixXd getCovariance()const {return m_covariance;}
-        void setState(const VectorXd& state ) {m_state = state; m_initialised = true;}
-        void setCovariance(const MatrixXd& cov ){m_covariance = cov;}
+        Vector4d& getState(){return m_state;}
+        Matrix4d& getCovariance() {return m_covariance;}
+        void setState(const Vector4d& state ) {m_state = state; m_initialised = true;}
+        void setCovariance(const Matrix4d& cov ){m_covariance = cov;}
 
     private:
         bool m_initialised;
-        VectorXd m_state;
-        MatrixXd m_covariance;
+        Vector4d m_state;
+        Matrix4d m_covariance;
 };
 
 class KalmanFilter : public KalmanFilterBase
@@ -49,7 +49,7 @@ class KalmanFilter : public KalmanFilterBase
         void predictionStep(GyroMeasurement gyro, double dt);
         void handleLidarMeasurements(const std::vector<LidarMeasurement>& meas, const BeaconMap& map);
         void handleLidarMeasurement(LidarMeasurement meas, const BeaconMap& map);
-        void handleGPSMeasurement(GPSMeasurement meas);
+        void handleGPSMeasurement(const GPSMeasurement& meas);
 
 };
 
