@@ -1,3 +1,8 @@
+## Note
+
+This is a fork from technitute/AKFSF-Simulation-CPP repository and contains my implementations of the exercises as well as some specific optimizations and tweaks to make it run on Arch Linux.
+
+
 # Advanced Kalman Filtering and Sensor Fusion Simulation #
 
 Welcome to the Advanced Kalman Filtering and Sensor Fusion Simulation exercise project. In this project, you will be developing the source code for a number of different types of Kalman Filters which are used to estimate the navigation state of a 2D vehicle problem; such as that would be found on a self-driving car!
