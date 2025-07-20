@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
+
 project(AKFSFSimulation)
+
+include(CheckIPOSupported)
+
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -16,11 +20,15 @@ set(SRC_CPP
     src/kalmanfilter.cpp
 )
 
+
+add_compile_options( -g -O0 -Wall  -Wpedantic)
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -flto")
+set(CMAKE_C_COMPILER glang)
+
 add_executable(${PROJECT_NAME}
         ${SRC_CPP}
         )
 
-add_compile_options(-g -O3)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${SDL2_INCLUDE_DIRS})
 

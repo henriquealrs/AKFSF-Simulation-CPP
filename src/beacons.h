@@ -12,6 +12,11 @@ struct BeaconData
     BeaconData():x(0.0),y(0.0),id(-1){}
     BeaconData(double xPos, double yPos):x(xPos),y(yPos),id(-1){}
     BeaconData(double xPos, double yPos, int beaconId):x(xPos),y(yPos),id(beaconId){}
+    bool isEmpty() const
+    {
+        return id < 0;
+    }
+
 };
 
 class BeaconMap
@@ -30,7 +35,7 @@ class BeaconMap
 
     private:
 
-        std::vector<BeaconData> m_beacon_map;    
+        std::vector<BeaconData> m_beacon_map;
 };
 
 
