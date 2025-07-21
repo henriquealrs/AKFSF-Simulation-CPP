@@ -75,8 +75,6 @@ void Simulation::update()
                 std::cout << "Simulation: Reached End of Simulation Time (" << m_time << ")" << std::endl;
                 return;
             }
-            std::cout << "Psi: " << m_car.getVehicleState().psi;
-            std::cout << "\nPredicted Psi: " << m_kalman_filter.getVehicleState().psi << "\n\n";
 
             // Update Motion
             m_car.update(m_time, m_sim_parameters.time_step);

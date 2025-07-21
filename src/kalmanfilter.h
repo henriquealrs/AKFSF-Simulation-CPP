@@ -22,7 +22,7 @@ class KalmanFilterBase
 
         KalmanFilterBase():m_initialised(false){}
         virtual ~KalmanFilterBase(){}
-        void reset(){m_initialised = false;}
+        virtual void reset(){m_initialised = false;}
         bool isInitialised() const {return m_initialised;}
 
     protected:
@@ -42,17 +42,25 @@ class KalmanFilterBase
 
 class KalmanFilter : public KalmanFilterBase
 {
-        bool m_first_loop = true;
-    public:
+    bool m_first_loop = true;
+    GPSMeasurement m_first_gps = {};
+    double accumulate_dt = 0.0;
+public:
+    virtual void reset() {
+        m_first_loop = true;
+        m_first_gps = {};
+        accumulate_dt = 0.0;
+        KalmanFilterBase::reset();
+    }
 
-        [[nodiscard]] VehicleState getVehicleState() const noexcept;
-        [[nodiscard]] Matrix2d getVehicleStatePositionCovariance() const noexcept;
+    [[nodiscard]] VehicleState getVehicleState() const noexcept;
+    [[nodiscard]] Matrix2d getVehicleStatePositionCovariance() const noexcept;
 
-        void predictionStep(double dt);
-        void predictionStep(GyroMeasurement gyro, double dt);
-        void handleLidarMeasurements(const std::vector<LidarMeasurement>& meas, const BeaconMap& map);
-        void handleLidarMeasurement(LidarMeasurement meas, const BeaconMap& map);
-        void handleGPSMeasurement(GPSMeasurement meas, double dt);
+    void predictionStep(double dt);
+    void predictionStep(GyroMeasurement gyro, double dt);
+    void handleLidarMeasurements(const std::vector<LidarMeasurement>& meas, const BeaconMap& map);
+    void handleLidarMeasurement(LidarMeasurement meas, const BeaconMap& map);
+    void handleGPSMeasurement(GPSMeasurement meas, double dt);
 
 };
 
