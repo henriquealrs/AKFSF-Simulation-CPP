@@ -73,12 +73,10 @@ void KalmanFilter::handleGPSMeasurement(GPSMeasurement meas, double dt) {
         Vector4d &state = getState();
         Matrix4d &cov = getCovariance();
 
-        static const auto H = []() {
-            return (Eigen::Matrix<double, 2, 4>() <<
+        static const auto H = (Eigen::Matrix<double, 2, 4>() <<
                      1, 0, 0, 0,
                      0, 1, 0, 0)
                    .finished();
-        }();
 
         static const Matrix2d R = r_var * Matrix2d::Identity();
 
