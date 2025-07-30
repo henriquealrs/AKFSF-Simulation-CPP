@@ -1,0 +1,44 @@
+[
+{
+  "directory": "/home/hlustosa/workspace/AKFSF-Simulation-CPP/build",
+  "command": "/usr/bin/c++  -I/usr/include/SDL2 -isystem /usr/include/eigen3 -g -std=gnu++20 -g -O0 -Wall -Wpedantic -o CMakeFiles/AKFSFSimulation.dir/src/main.cpp.o -c /home/hlustosa/workspace/AKFSF-Simulation-CPP/src/main.cpp",
+  "file": "/home/hlustosa/workspace/AKFSF-Simulation-CPP/src/main.cpp",
+  "output": "CMakeFiles/AKFSFSimulation.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/hlustosa/workspace/AKFSF-Simulation-CPP/build",
+  "command": "/usr/bin/c++  -I/usr/include/SDL2 -isystem /usr/include/eigen3 -g -std=gnu++20 -g -O0 -Wall -Wpedantic -o CMakeFiles/AKFSFSimulation.dir/src/display.cpp.o -c /home/hlustosa/workspace/AKFSF-Simulation-CPP/src/display.cpp",
+  "file": "/home/hlustosa/workspace/AKFSF-Simulation-CPP/src/display.cpp",
+  "output": "CMakeFiles/AKFSFSimulation.dir/src/display.cpp.o"
+},
+{
+  "directory": "/home/hlustosa/workspace/AKFSF-Simulation-CPP/build",
+  "command": "/usr/bin/c++  -I/usr/include/SDL2 -isystem /usr/include/eigen3 -g -std=gnu++20 -g -O0 -Wall -Wpedantic -o CMakeFiles/AKFSFSimulation.dir/src/beacons.cpp.o -c /home/hlustosa/workspace/AKFSF-Simulation-CPP/src/beacons.cpp",
+  "file": "/home/hlustosa/workspace/AKFSF-Simulation-CPP/src/beacons.cpp",
+  "output": "CMakeFiles/AKFSFSimulation.dir/src/beacons.cpp.o"
+},
+{
+  "directory": "/home/hlustosa/workspace/AKFSF-Simulation-CPP/build",
+  "command": "/usr/bin/c++  -I/usr/include/SDL2 -isystem /usr/include/eigen3 -g -std=gnu++20 -g -O0 -Wall -Wpedantic -o CMakeFiles/AKFSFSimulation.dir/src/sensors.cpp.o -c /home/hlustosa/workspace/AKFSF-Simulation-CPP/src/sensors.cpp",
+  "file": "/home/hlustosa/workspace/AKFSF-Simulation-CPP/src/sensors.cpp",
+  "output": "CMakeFiles/AKFSFSimulation.dir/src/sensors.cpp.o"
+},
+{
+  "directory": "/home/hlustosa/workspace/AKFSF-Simulation-CPP/build",
+  "command": "/usr/bin/c++  -I/usr/include/SDL2 -isystem /usr/include/eigen3 -g -std=gnu++20 -g -O0 -Wall -Wpedantic -o CMakeFiles/AKFSFSimulation.dir/src/simulation.cpp.o -c /home/hlustosa/workspace/AKFSF-Simulation-CPP/src/simulation.cpp",
+  "file": "/home/hlustosa/workspace/AKFSF-Simulation-CPP/src/simulation.cpp",
+  "output": "CMakeFiles/AKFSFSimulation.dir/src/simulation.cpp.o"
+},
+{
+  "directory": "/home/hlustosa/workspace/AKFSF-Simulation-CPP/build",
+  "command": "/usr/bin/c++  -I/usr/include/SDL2 -isystem /usr/include/eigen3 -g -std=gnu++20 -g -O0 -Wall -Wpedantic -o CMakeFiles/AKFSFSimulation.dir/src/utils.cpp.o -c /home/hlustosa/workspace/AKFSF-Simulation-CPP/src/utils.cpp",
+  "file": "/home/hlustosa/workspace/AKFSF-Simulation-CPP/src/utils.cpp",
+  "output": "CMakeFiles/AKFSFSimulation.dir/src/utils.cpp.o"
+},
+{
+  "directory": "/home/hlustosa/workspace/AKFSF-Simulation-CPP/build",
+  "command": "/usr/bin/c++  -I/usr/include/SDL2 -isystem /usr/include/eigen3 -g -std=gnu++20 -g -O0 -Wall -Wpedantic -o CMakeFiles/AKFSFSimulation.dir/src/kalmanfilter.cpp.o -c /home/hlustosa/workspace/AKFSF-Simulation-CPP/src/kalmanfilter.cpp",
+  "file": "/home/hlustosa/workspace/AKFSF-Simulation-CPP/src/kalmanfilter.cpp",
+  "output": "CMakeFiles/AKFSFSimulation.dir/src/kalmanfilter.cpp.o"
+}
+]
